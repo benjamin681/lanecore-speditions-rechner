@@ -545,8 +545,12 @@
       gap: 12px;
     }
 
-    @media (max-width: 700px) {
-      .kpi-grid { grid-template-columns: 1fr; }
+    @media (max-width: 900px) {
+      .kpi-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    }
+
+    @media (max-width: 500px) {
+      .kpi-grid { grid-template-columns: 1fr !important; }
     }
 
     .kpi-card {
@@ -906,6 +910,209 @@
       font-size: 2rem;
       margin-bottom: 12px;
     }
+
+    /* ========== 14. Mehrjahres-Sektion ========== */
+    .multi-year-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+    }
+
+    @media (max-width: 800px) {
+      .multi-year-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 500px) {
+      .multi-year-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .year-card {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 12px;
+      text-align: center;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .year-card.highlight {
+      border-color: var(--gold);
+      background: rgba(236, 201, 75, 0.06);
+    }
+
+    .year-card-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .year-card-savings {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--green);
+      font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+    }
+
+    .year-card-costs {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      margin-top: 4px;
+      font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+    }
+
+    .year-card-net {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--gold);
+      margin-top: 6px;
+      padding-top: 6px;
+      border-top: 1px solid rgba(51,65,85,0.5);
+      font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+    }
+
+    .year-card-note {
+      font-size: 0.65rem;
+      color: var(--text-dim);
+      margin-top: 4px;
+      font-style: italic;
+    }
+
+    /* Cumulative summary row */
+    .cumulative-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 12px;
+      padding-top: 14px;
+      border-top: 2px solid var(--border);
+    }
+
+    @media (max-width: 500px) {
+      .cumulative-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .cumulative-item {
+      text-align: center;
+    }
+
+    .cumulative-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .cumulative-value {
+      font-size: 1.2rem;
+      font-weight: 800;
+      font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+    }
+
+    .cumulative-sub {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      margin-top: 2px;
+    }
+
+    /* Assumptions info */
+    .assumptions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 12px;
+      padding: 10px 14px;
+      background: rgba(66,153,225,0.06);
+      border: 1px solid rgba(66,153,225,0.15);
+      border-radius: var(--radius-sm);
+    }
+
+    .assumption-item {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .assumption-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--blue);
+      flex-shrink: 0;
+    }
+
+    /* Multi-year bar chart */
+    .multi-bar-chart {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-around;
+      height: 200px;
+      padding-bottom: 28px;
+      gap: 8px;
+    }
+
+    .multi-bar-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+      max-width: 100px;
+    }
+
+    .multi-bar-stack {
+      width: 100%;
+      display: flex;
+      flex-direction: column-reverse;
+      align-items: center;
+      gap: 2px;
+      position: relative;
+    }
+
+    .multi-bar {
+      width: 100%;
+      border-radius: 4px 4px 0 0;
+      transition: height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      min-height: 2px;
+    }
+
+    .multi-bar.cost-bar {
+      background: linear-gradient(180deg, var(--red), var(--red-dark));
+      border-radius: 0 0 4px 4px;
+      opacity: 0.7;
+    }
+
+    .multi-bar.savings-bar {
+      background: linear-gradient(180deg, var(--green), var(--green-dark));
+    }
+
+    .multi-bar-value {
+      font-size: 0.68rem;
+      font-weight: 700;
+      font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+      white-space: nowrap;
+      color: var(--gold);
+    }
+
+    .multi-bar-label {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      text-align: center;
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
@@ -1030,9 +1237,9 @@
       <div class="results-panel" id="resultsPanel">
 
         <!-- KPI Cards -->
-        <div class="kpi-grid" id="kpiGrid">
+        <div class="kpi-grid" id="kpiGrid" style="grid-template-columns:repeat(4,1fr)">
           <div class="kpi-card savings">
-            <div class="kpi-label">Jaehrliche Einsparung</div>
+            <div class="kpi-label">Einsparung (Jahr 1)</div>
             <div class="kpi-value green" id="kpiSavings">0 EUR</div>
             <div class="kpi-sub" id="kpiSavingsMonth">0 EUR / Monat</div>
           </div>
@@ -1045,6 +1252,11 @@
             <div class="kpi-label">Break-Even</div>
             <div class="kpi-value blue" id="kpiBreakeven">- Monate</div>
             <div class="kpi-sub" id="kpiBEDate">-</div>
+          </div>
+          <div class="kpi-card roi" style="--top-color:var(--green)">
+            <div class="kpi-label">Netto-Gewinn (Jahr 2)</div>
+            <div class="kpi-value green" id="kpiYear2Net">0 EUR</div>
+            <div class="kpi-sub" id="kpiYear2Sub">ohne Setup-Kosten</div>
           </div>
         </div>
 
@@ -1107,6 +1319,66 @@
                 </div>
                 <div class="bar-label">Netto-Gewinn<br>(Jahr 1)</div>
               </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mehrjahres-Projektion -->
+        <div class="card" id="multiYearSection">
+          <div class="card-header">
+            <div class="card-title">5-Jahres-Projektion</div>
+            <span class="savings-arrow" id="multiYearBadge">+0% Lohnsteigerung/Jahr</span>
+          </div>
+
+          <!-- Mehrjahres-Balken -->
+          <div class="multi-bar-chart" id="multiBarChart"></div>
+
+          <!-- Jahr-Karten -->
+          <div class="multi-year-grid" id="multiYearGrid"></div>
+
+          <!-- Kumulierte 5-Jahres-Summe -->
+          <div class="cumulative-row" id="cumulativeRow">
+            <div class="cumulative-item">
+              <div class="cumulative-label">Gesamteinsparung (5 J.)</div>
+              <div class="cumulative-value green" id="cumSavings">0 EUR</div>
+              <div class="cumulative-sub" id="cumSavingsSub">inkl. Lohnsteigerung</div>
+            </div>
+            <div class="cumulative-item">
+              <div class="cumulative-label">Gesamtkosten (5 J.)</div>
+              <div class="cumulative-value" style="color:var(--red)" id="cumCosts">0 EUR</div>
+              <div class="cumulative-sub" id="cumCostsSub">Setup + 60 Monate</div>
+            </div>
+            <div class="cumulative-item">
+              <div class="cumulative-label">Netto-Gewinn (5 J.)</div>
+              <div class="cumulative-value gold" id="cumNet">0 EUR</div>
+              <div class="cumulative-sub" id="cumROI">0x ROI</div>
+            </div>
+          </div>
+
+          <!-- Annahmen -->
+          <div class="assumptions" id="assumptions">
+            <div class="assumption-item"><div class="assumption-dot"></div>3,5% jaehrliche Lohnsteigerung</div>
+            <div class="assumption-item"><div class="assumption-dot"></div>Freigesetzte Zeit = Produktivitaetsgewinn</div>
+            <div class="assumption-item"><div class="assumption-dot"></div>Setup-Kosten nur in Jahr 1</div>
+            <div class="assumption-item"><div class="assumption-dot"></div>Effizienzbonus +5% p.a. durch Optimierung</div>
+          </div>
+        </div>
+
+        <!-- Produktivitaets-Highlight -->
+        <div class="card" id="productivityCard">
+          <div class="card-header">
+            <div class="card-title">Produktivitaetsgewinn</div>
+          </div>
+          <div class="cost-grid">
+            <div class="cost-card" style="border-left:3px solid var(--green)">
+              <div class="cost-card-title">Freigesetzte Arbeitsstunden / Jahr</div>
+              <div class="cost-card-value green" id="freeHoursYear">0 h</div>
+              <div class="cost-card-detail" id="freeHoursDetail">Entspricht 0 Vollzeitstellen</div>
+            </div>
+            <div class="cost-card" style="border-left:3px solid var(--gold)">
+              <div class="cost-card-title">Wert der freigesetzten Zeit (Jahr 5)</div>
+              <div class="cost-card-value gold" id="freeTimeValue">0 EUR</div>
+              <div class="cost-card-detail" id="freeTimeDetail">durch Lohnsteigerung +0% wertvoller</div>
             </div>
           </div>
         </div>
@@ -1202,6 +1474,12 @@
 
     const WORKDAYS_PER_MONTH = 22;
     const MONTHS_PER_YEAR = 12;
+    const HOURS_PER_FTE = 1720; // Vollzeitstunden pro Jahr (abzgl. Urlaub/Feiertage)
+
+    // Mehrjahres-Parameter
+    const PROJECTION_YEARS = 5;
+    const ANNUAL_WAGE_INCREASE = 0.035; // 3,5% jaehrliche Lohnsteigerung (Tarifentwicklung DE)
+    const ANNUAL_EFFICIENCY_BONUS = 0.05; // 5% p.a. Effizienzsteigerung durch KI-Optimierung (Lerneffekt, bessere Modelle)
 
     // ========== 2. State ==========
     let state = {
@@ -1361,6 +1639,62 @@
       };
     }
 
+    // ========== 5b. Mehrjahres-Projektion ==========
+    function calcMultiYear(baseResults) {
+      const years = [];
+      let cumSavings = 0, cumCosts = 0;
+
+      for (let y = 1; y <= PROJECTION_YEARS; y++) {
+        // Lohnsteigerung: Jedes Jahr werden Personalkosten teurer → KI-Einsparungen wertvoller
+        const wageFactor = Math.pow(1 + ANNUAL_WAGE_INCREASE, y - 1);
+
+        // Effizienzbonus: KI wird jedes Jahr besser (Lerneffekte, Modellverbesserungen, mehr Automatisierung)
+        const efficiencyFactor = 1 + ANNUAL_EFFICIENCY_BONUS * (y - 1);
+
+        // Einsparung dieses Jahres = Basis × Lohnsteigerung × Effizienz
+        const yearSavings = baseResults.totalSavingsYear * wageFactor * efficiencyFactor;
+
+        // Kosten: Setup nur in Jahr 1, monatliche Kosten bleiben stabil
+        const yearSetup = y === 1 ? baseResults.totalSetup : 0;
+        const yearMonthlyCost = baseResults.totalMonthly * 12;
+        const yearTotalCost = yearSetup + yearMonthlyCost;
+
+        const yearNetBenefit = yearSavings - yearTotalCost;
+        const yearROI = yearTotalCost > 0 ? (yearNetBenefit / yearTotalCost) * 100 : 0;
+
+        cumSavings += yearSavings;
+        cumCosts += yearTotalCost;
+
+        // Freigesetzte Stunden basierend auf aktuellem (gestiegenen) Stundenlohn
+        const currentHourlyWage = state.stundenlohn * wageFactor;
+        const freedHoursYear = yearSavings / currentHourlyWage;
+        const freedFTE = freedHoursYear / HOURS_PER_FTE;
+
+        years.push({
+          year: y,
+          savings: yearSavings,
+          setup: yearSetup,
+          monthlyCost: yearMonthlyCost,
+          totalCost: yearTotalCost,
+          netBenefit: yearNetBenefit,
+          roi: yearROI,
+          wageFactor,
+          efficiencyFactor,
+          cumSavings,
+          cumCosts,
+          cumNet: cumSavings - cumCosts,
+          freedHoursYear,
+          freedFTE,
+          currentHourlyWage
+        });
+      }
+
+      // Gesamt-ROI ueber 5 Jahre
+      const totalROI = cumCosts > 0 ? cumSavings / cumCosts : 0;
+
+      return { years, cumSavings, cumCosts, cumNet: cumSavings - cumCosts, totalROI };
+    }
+
     // ========== 6. Count-up Animation ==========
     const animationTargets = {};
 
@@ -1482,7 +1816,7 @@
         : 'linear-gradient(180deg, var(--red), var(--red-dark))';
     }
 
-    function generateVorlese(results) {
+    function generateVorlese(results, multiYear) {
       const name = state.companyName || 'Ihre Spedition';
       const count = results.activeCount;
 
@@ -1515,9 +1849,105 @@
         text += `Fuer jeden investierten Euro bekommen Sie <strong>${results.roiFactor.toFixed(1).replace('.', ',')} Euro</strong> zurueck. `;
       }
 
-      text += `Wollen wir mit einem kostenlosen Proof-of-Concept starten?`;
+      // Mehrjahres-Argument
+      if (multiYear && multiYear.years.length > 1) {
+        const y2 = multiYear.years[1];
+        const y5 = multiYear.years[PROJECTION_YEARS - 1];
+
+        text += `<br><br>`;
+        text += `Und das Beste: <strong>Ab Jahr 2 faellt die Setup-Gebuehr weg</strong>, `;
+        text += `d.h. Ihr Netto-Gewinn steigt auf <strong>${fmtEuro(y2.netBenefit)}</strong>. `;
+
+        text += `Durch steigende Personalkosten von ca. ${(ANNUAL_WAGE_INCREASE * 100).toFixed(1)}% pro Jahr `;
+        text += `wird die KI-Loesung sogar <strong>jedes Jahr wertvoller</strong>. `;
+
+        text += `Ueber 5 Jahre sparen Sie insgesamt <strong>${fmtEuro(multiYear.cumSavings)}</strong> `;
+        text += `bei Gesamtkosten von nur <strong>${fmtEuro(multiYear.cumCosts)}</strong> - `;
+        text += `ein <strong>${multiYear.totalROI.toFixed(1).replace('.', ',')}x Return</strong> auf Ihre Investition. `;
+
+        // Freigesetzte Stunden
+        const y1 = multiYear.years[0];
+        if (y1.freedFTE >= 1) {
+          text += `Das entspricht <strong>${y1.freedFTE.toFixed(1).replace('.', ',')} Vollzeitstellen</strong>, `;
+          text += `die Ihre Mitarbeiter fuer wertschoepfende Aufgaben nutzen koennen.`;
+        }
+      }
+
+      text += `<br><br>Wollen wir mit einem kostenlosen Proof-of-Concept starten?`;
 
       return text;
+    }
+
+    // ========== 7b. Multi-Year Render ==========
+    function renderMultiYearGrid(multiYear) {
+      const grid = $('multiYearGrid');
+      grid.innerHTML = '';
+
+      multiYear.years.forEach(y => {
+        const card = document.createElement('div');
+        card.className = 'year-card' + (y.year >= 2 ? ' highlight' : '');
+
+        const lohnNote = y.year > 1
+          ? `Lohn +${((y.wageFactor - 1) * 100).toFixed(1)}%`
+          : 'Basisjahr';
+
+        card.innerHTML = `
+          <div class="year-card-label">Jahr ${y.year}</div>
+          <div class="year-card-savings">${fmtEuro(y.savings)}</div>
+          <div class="year-card-costs">Kosten: ${fmtEuro(y.totalCost)}</div>
+          <div class="year-card-net">${y.netBenefit > 0 ? '+' : ''}${fmtEuro(y.netBenefit)}</div>
+          <div class="year-card-note">${lohnNote}</div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function renderMultiYearChart(multiYear) {
+      const chart = $('multiBarChart');
+      chart.innerHTML = '';
+
+      const maxVal = Math.max(...multiYear.years.map(y => Math.max(y.savings, y.totalCost)), 1);
+      const maxHeight = 150;
+
+      multiYear.years.forEach(y => {
+        const savH = (y.savings / maxVal) * maxHeight;
+        const costH = (y.totalCost / maxVal) * maxHeight;
+
+        const group = document.createElement('div');
+        group.className = 'multi-bar-group';
+
+        group.innerHTML = `
+          <div class="multi-bar-value">${y.netBenefit > 0 ? '+' : ''}${fmtEuro(y.netBenefit)}</div>
+          <div class="multi-bar-stack">
+            <div class="multi-bar savings-bar" style="height:${Math.max(savH, 2)}px"></div>
+          </div>
+          <div class="multi-bar-label">Jahr ${y.year}</div>
+        `;
+        chart.appendChild(group);
+      });
+    }
+
+    function renderMultiYearSummary(multiYear, baseResults) {
+      $('cumSavings').textContent = fmtEuro(multiYear.cumSavings);
+      $('cumCosts').textContent = fmtEuro(multiYear.cumCosts);
+      $('cumNet').textContent = fmtEuro(multiYear.cumNet);
+      $('cumROI').textContent = multiYear.totalROI.toFixed(1).replace('.', ',') + 'x ROI ueber 5 Jahre';
+      $('cumCostsSub').textContent = `Setup ${fmtEuro(baseResults.totalSetup)} + ${PROJECTION_YEARS * 12} Monate`;
+
+      // Badge
+      $('multiYearBadge').textContent = `+${(ANNUAL_WAGE_INCREASE * 100).toFixed(1)}% Lohnsteigerung/Jahr`;
+    }
+
+    function renderProductivity(multiYear) {
+      const y1 = multiYear.years[0];
+      const y5 = multiYear.years[PROJECTION_YEARS - 1];
+
+      $('freeHoursYear').textContent = fmtNumber(Math.round(y1.freedHoursYear)) + ' h';
+      $('freeHoursDetail').textContent = `Entspricht ${y1.freedFTE.toFixed(1).replace('.', ',')} Vollzeitstellen`;
+
+      const valueDiff = ((y5.wageFactor - 1) * 100);
+      $('freeTimeValue').textContent = fmtEuro(y5.savings);
+      $('freeTimeDetail').textContent = `durch Lohnsteigerung +${valueDiff.toFixed(0)}% wertvoller als heute`;
     }
 
     // ========== 8. Update Results ==========
@@ -1565,8 +1995,23 @@
       // Bar Chart
       renderBarChart(r);
 
+      // Mehrjahres-Projektion
+      const multiYear = calcMultiYear(r);
+
+      // Year 2 KPI card
+      if (multiYear.years.length >= 2) {
+        const y2 = multiYear.years[1];
+        $('kpiYear2Net').textContent = fmtEuro(y2.netBenefit);
+        $('kpiYear2Sub').textContent = `ohne Setup, +${((y2.wageFactor - 1) * 100).toFixed(1)}% Lohn`;
+      }
+
+      renderMultiYearGrid(multiYear);
+      renderMultiYearChart(multiYear);
+      renderMultiYearSummary(multiYear, r);
+      renderProductivity(multiYear);
+
       // Vorlese
-      $('vorleseText').innerHTML = generateVorlese(r);
+      $('vorleseText').innerHTML = generateVorlese(r, multiYear);
     }
 
     // ========== 9. Event Handlers ==========
