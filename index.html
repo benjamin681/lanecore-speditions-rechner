@@ -1,0 +1,1687 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>LaneCore AI - Einsparpotential-Rechner fuer Speditionen</title>
+
+  <!-- PWA Meta Tags -->
+  <meta name="description" content="Berechnen Sie das KI-Einsparpotential fuer Ihre Spedition. 4 Module, Live-Kalkulation, Vorlese-Text fuer Vertrieb.">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="LaneCore Rechner">
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%23ecc94b' rx='18' width='100' height='100'/><text x='50' y='68' font-family='system-ui' font-size='48' font-weight='800' fill='%231a365d' text-anchor='middle'>LC</text></svg>">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%23ecc94b' rx='32' width='180' height='180'/><text x='90' y='118' font-family='system-ui' font-size='86' font-weight='800' fill='%231a365d' text-anchor='middle'>LC</text></svg>">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="LaneCore AI - Einsparpotential-Rechner">
+  <meta property="og:description" content="Berechnen Sie in Sekunden, wie viel Ihre Spedition mit KI-Automatisierung sparen kann.">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="de_DE">
+  <style>
+    /* ========== 1. CSS Reset & Custom Properties ========== */
+    :root {
+      --navy: #1a365d;
+      --navy-light: #2d4a7c;
+      --blue: #4299e1;
+      --blue-light: #63b3ed;
+      --gold: #ecc94b;
+      --gold-dark: #d69e2e;
+      --green: #48bb78;
+      --green-dark: #38a169;
+      --red: #fc8181;
+      --red-dark: #e53e3e;
+      --orange: #ed8936;
+      --bg-dark: #0f172a;
+      --bg-card: #1e293b;
+      --bg-card-hover: #273548;
+      --bg-input: #162032;
+      --border: #334155;
+      --border-light: #475569;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --shadow: 0 4px 24px rgba(0,0,0,0.3);
+      --shadow-lg: 0 8px 40px rgba(0,0,0,0.4);
+      --radius: 12px;
+      --radius-sm: 8px;
+      --radius-xs: 6px;
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, Roboto, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ========== 2. Typography ========== */
+    h1 { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700; letter-spacing: -0.02em; }
+    h2 { font-size: clamp(1.1rem, 2vw, 1.4rem); font-weight: 600; letter-spacing: -0.01em; }
+    h3 { font-size: 0.95rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
+
+    .mono { font-family: 'SF Mono', 'Cascadia Code', 'Consolas', 'Fira Code', monospace; }
+    .gold { color: var(--gold); }
+    .blue { color: var(--blue); }
+    .green { color: var(--green); }
+    .muted { color: var(--text-muted); }
+    .dim { color: var(--text-dim); }
+
+    /* ========== 3. Layout ========== */
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Header */
+    .header {
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(12px);
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      border-radius: var(--radius-xs);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 16px;
+      color: var(--navy);
+    }
+
+    .logo-text {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .logo-text span {
+      color: var(--gold);
+    }
+
+    .header-badge {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .header-badge::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: var(--green);
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 8px 16px;
+      border-radius: var(--radius-xs);
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text);
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-light);
+    }
+
+    .btn-gold {
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      color: var(--navy);
+      border-color: var(--gold-dark);
+      font-weight: 600;
+    }
+
+    .btn-gold:hover {
+      filter: brightness(1.1);
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border-color: transparent;
+    }
+
+    .btn-ghost:hover {
+      background: var(--bg-card);
+    }
+
+    /* ========== 4. Hero Section ========== */
+    .hero {
+      padding: 40px 0 32px;
+      text-align: center;
+    }
+
+    .hero-subtitle {
+      font-size: 0.85rem;
+      color: var(--gold);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+
+    .hero h1 {
+      margin-bottom: 12px;
+    }
+
+    .hero-desc {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      max-width: 600px;
+      margin: 0 auto 32px;
+    }
+
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+
+    .hero-stat {
+      text-align: center;
+    }
+
+    .hero-stat-value {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+    }
+
+    .hero-stat-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 4px;
+    }
+
+    /* ========== 5. Main Grid ========== */
+    .main {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 24px;
+      padding-bottom: 60px;
+    }
+
+    @media (max-width: 960px) {
+      .main {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ========== 6. Input Panel (Left) ========== */
+    .input-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      transition: var(--transition);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+    }
+
+    /* Firmenname Input */
+    .company-input {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xs);
+      padding: 10px 14px;
+      color: var(--text);
+      font-size: 0.95rem;
+      font-family: inherit;
+      transition: var(--transition);
+      outline: none;
+    }
+
+    .company-input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(66,153,225,0.15);
+    }
+
+    .company-input::placeholder {
+      color: var(--text-dim);
+    }
+
+    /* Slider Group */
+    .input-group {
+      margin-bottom: 18px;
+    }
+
+    .input-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .input-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .input-label-text {
+      font-size: 0.85rem;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .input-label-value {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--gold);
+      font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+    }
+
+    .slider-container {
+      position: relative;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      background: var(--border);
+      border-radius: 3px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 22px;
+      height: 22px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      border-radius: 50%;
+      cursor: grab;
+      box-shadow: 0 2px 8px rgba(236,201,75,0.3);
+      transition: transform 0.15s ease;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:active {
+      cursor: grabbing;
+      transform: scale(1.15);
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 22px;
+      height: 22px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      border-radius: 50%;
+      cursor: grab;
+      border: none;
+      box-shadow: 0 2px 8px rgba(236,201,75,0.3);
+    }
+
+    .slider-marks {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 4px;
+      font-size: 0.7rem;
+      color: var(--text-dim);
+    }
+
+    /* Number Input */
+    .number-input {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xs);
+      padding: 10px 14px;
+      color: var(--gold);
+      font-size: 1rem;
+      font-weight: 600;
+      font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+      text-align: right;
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .number-input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(66,153,225,0.15);
+    }
+
+    /* ========== 7. Module Toggles ========== */
+    .module-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .module-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+    }
+
+    .module-item:hover {
+      background: var(--bg-card-hover);
+    }
+
+    .module-item.active {
+      border-color: var(--blue);
+      background: rgba(66, 153, 225, 0.08);
+    }
+
+    .module-toggle {
+      width: 40px;
+      height: 22px;
+      background: var(--border);
+      border-radius: 11px;
+      position: relative;
+      transition: var(--transition);
+      flex-shrink: 0;
+    }
+
+    .module-toggle::after {
+      content: '';
+      width: 18px;
+      height: 18px;
+      background: white;
+      border-radius: 50%;
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      transition: var(--transition);
+    }
+
+    .module-item.active .module-toggle {
+      background: var(--blue);
+    }
+
+    .module-item.active .module-toggle::after {
+      left: 20px;
+    }
+
+    .module-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .module-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .module-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .module-badge.m1 { background: rgba(66,153,225,0.2); color: var(--blue); }
+    .module-badge.m2 { background: rgba(72,187,120,0.2); color: var(--green); }
+    .module-badge.m3 { background: rgba(237,137,54,0.2); color: var(--orange); }
+    .module-badge.m4 { background: rgba(236,201,75,0.2); color: var(--gold); }
+
+    .module-desc {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      margin-top: 2px;
+    }
+
+    .module-price {
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .module-price-monthly {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text);
+      font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+    }
+
+    .module-price-setup {
+      font-size: 0.7rem;
+      color: var(--text-dim);
+    }
+
+    /* ========== 8. Results Panel (Right) ========== */
+    .results-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* KPI Cards */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    @media (max-width: 700px) {
+      .kpi-grid { grid-template-columns: 1fr; }
+    }
+
+    .kpi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+    }
+
+    .kpi-card.savings::before { background: linear-gradient(90deg, var(--green), var(--green-dark)); }
+    .kpi-card.roi::before { background: linear-gradient(90deg, var(--gold), var(--gold-dark)); }
+    .kpi-card.breakeven::before { background: linear-gradient(90deg, var(--blue), var(--blue-light)); }
+
+    .kpi-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .kpi-value {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+    }
+
+    .kpi-sub {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      margin-top: 4px;
+    }
+
+    /* Cost Breakdown */
+    .cost-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    @media (max-width: 700px) {
+      .cost-grid { grid-template-columns: 1fr; }
+    }
+
+    .cost-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+
+    .cost-card-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .cost-card-value {
+      font-size: 1.5rem;
+      font-weight: 800;
+      font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+    }
+
+    .cost-card-detail {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      margin-top: 4px;
+    }
+
+    /* Module Breakdown Table */
+    .breakdown-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .breakdown-table th {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-dim);
+      text-align: left;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border);
+      font-weight: 600;
+    }
+
+    .breakdown-table th:not(:first-child) {
+      text-align: right;
+    }
+
+    .breakdown-table td {
+      padding: 10px;
+      font-size: 0.85rem;
+      border-bottom: 1px solid rgba(51,65,85,0.4);
+    }
+
+    .breakdown-table td:not(:first-child) {
+      text-align: right;
+      font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+      font-size: 0.82rem;
+    }
+
+    .breakdown-table tr.total td {
+      font-weight: 700;
+      border-top: 2px solid var(--border);
+      border-bottom: none;
+      padding-top: 12px;
+    }
+
+    .breakdown-table .module-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+
+    .dot-m1 { background: var(--blue); }
+    .dot-m2 { background: var(--green); }
+    .dot-m3 { background: var(--orange); }
+    .dot-m4 { background: var(--gold); }
+
+    .inactive-row {
+      opacity: 0.35;
+    }
+
+    /* SVG Chart */
+    .chart-container {
+      position: relative;
+      height: 200px;
+      margin-top: 12px;
+    }
+
+    .bar-chart {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 32px;
+      height: 100%;
+      padding-bottom: 28px;
+    }
+
+    .bar-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+      max-width: 140px;
+    }
+
+    .bar {
+      width: 100%;
+      border-radius: 6px 6px 0 0;
+      transition: height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      min-height: 4px;
+    }
+
+    .bar-value {
+      position: absolute;
+      top: -24px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.78rem;
+      font-weight: 700;
+      font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+      white-space: nowrap;
+    }
+
+    .bar-label {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .bar.costs { background: linear-gradient(180deg, var(--red), var(--red-dark)); }
+    .bar.savings { background: linear-gradient(180deg, var(--green), var(--green-dark)); }
+    .bar.net { background: linear-gradient(180deg, var(--gold), var(--gold-dark)); }
+
+    /* ========== 9. Vorlese Panel ========== */
+    .vorlese-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+
+    .vorlese-text {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: var(--text);
+      padding: 16px;
+      background: var(--bg-input);
+      border-radius: var(--radius-sm);
+      border-left: 3px solid var(--gold);
+    }
+
+    .vorlese-text strong {
+      color: var(--gold);
+    }
+
+    .vorlese-hint {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      margin-top: 8px;
+      font-style: italic;
+    }
+
+    /* Copy Button */
+    .copy-btn {
+      padding: 6px 12px;
+      font-size: 0.75rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: var(--radius-xs);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .copy-btn:hover {
+      background: var(--bg-card-hover);
+      color: var(--text);
+    }
+
+    .copy-btn.copied {
+      background: rgba(72,187,120,0.15);
+      border-color: var(--green);
+      color: var(--green);
+    }
+
+    /* ========== 10. Presentation Mode ========== */
+    body.presentation .input-panel {
+      display: none;
+    }
+
+    body.presentation .main {
+      grid-template-columns: 1fr;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    body.presentation .hero-stats .hero-stat-value {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+    }
+
+    body.presentation .kpi-value {
+      font-size: clamp(2rem, 4vw, 3rem);
+    }
+
+    body.presentation .header-badge::after {
+      content: ' - Praesentation';
+    }
+
+    /* ========== 11. Responsive ========== */
+    @media (max-width: 640px) {
+      .container { padding: 0 16px; }
+      .hero-stats { gap: 24px; }
+      .header-inner { gap: 12px; }
+      .card { padding: 16px; }
+    }
+
+    /* ========== 12. Print ========== */
+    @media print {
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      body { background: #0f172a !important; }
+      .header { position: static; }
+      .no-print, .input-panel, .btn, .copy-btn { display: none !important; }
+      .main { grid-template-columns: 1fr; }
+      .card, .kpi-card, .cost-card, .vorlese-panel { break-inside: avoid; }
+    }
+
+    /* ========== 13. Animations ========== */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-in {
+      animation: fadeInUp 0.5s ease-out forwards;
+    }
+
+    /* Tooltip */
+    .tooltip {
+      position: relative;
+      cursor: help;
+    }
+
+    .tooltip::after {
+      content: attr(data-tip);
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--navy);
+      color: var(--text);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+      z-index: 10;
+    }
+
+    .tooltip:hover::after {
+      opacity: 1;
+    }
+
+    /* Savings arrow */
+    .savings-arrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--green);
+      background: rgba(72,187,120,0.1);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    /* Divider */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 4px 0;
+    }
+
+    /* No modules selected message */
+    .no-modules-msg {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-dim);
+      font-size: 0.9rem;
+    }
+
+    .no-modules-msg .icon {
+      font-size: 2rem;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="container header-inner">
+      <div class="logo">
+        <div class="logo-icon">LC</div>
+        <div class="logo-text">LaneCore <span>AI</span></div>
+      </div>
+      <div class="header-badge">Speditions-Rechner v1.0</div>
+      <div class="header-actions no-print">
+        <button class="btn btn-ghost" onclick="togglePresentation()" id="presBtn">Praesentation</button>
+        <button class="btn" onclick="window.print()">Als PDF</button>
+        <button class="btn btn-gold" onclick="resetAll()">Zuruecksetzen</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-subtitle">Einsparpotential-Rechner</div>
+      <h1>KI-Automatisierung fuer <span class="gold" id="companyDisplay">Ihre Spedition</span></h1>
+      <p class="hero-desc">Berechnen Sie in Sekunden, wie viel Ihre Spedition mit KI-Automatisierung pro Jahr sparen kann.</p>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-value green" id="heroSavings">0 EUR</div>
+          <div class="hero-stat-label">Jaehrliche Einsparung</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-value gold" id="heroROI">0%</div>
+          <div class="hero-stat-label">Return on Investment</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-value blue" id="heroBreakeven">0 Monate</div>
+          <div class="hero-stat-label">Break-Even</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN -->
+  <div class="container">
+    <div class="main">
+
+      <!-- LEFT: INPUT PANEL -->
+      <div class="input-panel">
+
+        <!-- Company Name -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Unternehmen</div>
+          </div>
+          <input type="text" class="company-input" id="companyName" placeholder="z.B. AMM Spedition GmbH" oninput="updateCompanyName()">
+        </div>
+
+        <!-- Sendungen & Mitarbeiter -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Unternehmensdaten</div>
+          </div>
+
+          <div class="input-group">
+            <div class="input-label">
+              <span class="input-label-text">Sendungen pro Monat</span>
+              <span class="input-label-value" id="sendungenDisplay">10.000</span>
+            </div>
+            <input type="range" id="sendungenSlider" min="1000" max="150000" step="1000" value="10000" oninput="onInputChange()">
+            <div class="slider-marks">
+              <span>1K</span><span>50K</span><span>100K</span><span>150K</span>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <div class="input-label">
+              <span class="input-label-text">Mitarbeiter</span>
+              <span class="input-label-value" id="mitarbeiterDisplay">100</span>
+            </div>
+            <input type="range" id="mitarbeiterSlider" min="10" max="3000" step="10" value="100" oninput="onInputChange()">
+            <div class="slider-marks">
+              <span>10</span><span>500</span><span>1.500</span><span>3.000</span>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <div class="input-label">
+              <span class="input-label-text">Durchschn. Stundenlohn (EUR)</span>
+              <span class="input-label-value" id="stundenlohnDisplay">35 EUR</span>
+            </div>
+            <input type="range" id="stundenlohnSlider" min="15" max="80" step="1" value="35" oninput="onInputChange()">
+            <div class="slider-marks">
+              <span>15 EUR</span><span>35 EUR</span><span>55 EUR</span><span>80 EUR</span>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <div class="input-label">
+              <span class="input-label-text">Standorte</span>
+              <span class="input-label-value" id="standorteDisplay">1</span>
+            </div>
+            <input type="range" id="standorteSlider" min="1" max="20" step="1" value="1" oninput="onInputChange()">
+            <div class="slider-marks">
+              <span>1</span><span>5</span><span>10</span><span>20</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Module Selection -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Module auswaehlen</div>
+            <button class="btn btn-ghost" onclick="toggleAllModules()" style="padding:4px 10px;font-size:0.75rem;">Alle an/aus</button>
+          </div>
+          <div class="module-list" id="moduleList"></div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT: RESULTS PANEL -->
+      <div class="results-panel" id="resultsPanel">
+
+        <!-- KPI Cards -->
+        <div class="kpi-grid" id="kpiGrid">
+          <div class="kpi-card savings">
+            <div class="kpi-label">Jaehrliche Einsparung</div>
+            <div class="kpi-value green" id="kpiSavings">0 EUR</div>
+            <div class="kpi-sub" id="kpiSavingsMonth">0 EUR / Monat</div>
+          </div>
+          <div class="kpi-card roi">
+            <div class="kpi-label">ROI (Jahr 1)</div>
+            <div class="kpi-value gold" id="kpiROI">0%</div>
+            <div class="kpi-sub" id="kpiROIFactor">0x Faktor</div>
+          </div>
+          <div class="kpi-card breakeven">
+            <div class="kpi-label">Break-Even</div>
+            <div class="kpi-value blue" id="kpiBreakeven">- Monate</div>
+            <div class="kpi-sub" id="kpiBEDate">-</div>
+          </div>
+        </div>
+
+        <!-- Kosten fuer den Kunden -->
+        <div class="cost-grid">
+          <div class="cost-card">
+            <div class="cost-card-title">Einmalige Setup-Gebuehr</div>
+            <div class="cost-card-value gold" id="costSetup">0 EUR</div>
+            <div class="cost-card-detail" id="costSetupDetail">Fuer 0 Module</div>
+          </div>
+          <div class="cost-card">
+            <div class="cost-card-title">Monatliche Kosten</div>
+            <div class="cost-card-value blue" id="costMonthly">0 EUR</div>
+            <div class="cost-card-detail" id="costMonthlyDetail">0 EUR / Jahr</div>
+          </div>
+        </div>
+
+        <!-- Modul-Breakdown Tabelle -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Moduluebersicht</div>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="breakdown-table" id="breakdownTable">
+              <thead>
+                <tr>
+                  <th>Modul</th>
+                  <th>Setup</th>
+                  <th>Monatlich</th>
+                  <th>Ersparnis/J.</th>
+                </tr>
+              </thead>
+              <tbody id="breakdownBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Visueller Vergleich -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Jaehrlicher Vergleich</div>
+          </div>
+          <div class="chart-container">
+            <div class="bar-chart" id="barChart">
+              <div class="bar-group">
+                <div class="bar costs" id="barCosts" style="height:0">
+                  <div class="bar-value" id="barCostsVal">0 EUR</div>
+                </div>
+                <div class="bar-label">Investition<br>(Jahr 1)</div>
+              </div>
+              <div class="bar-group">
+                <div class="bar savings" id="barSavings" style="height:0">
+                  <div class="bar-value" id="barSavingsVal">0 EUR</div>
+                </div>
+                <div class="bar-label">Einsparung<br>(Jahr 1)</div>
+              </div>
+              <div class="bar-group">
+                <div class="bar net" id="barNet" style="height:0">
+                  <div class="bar-value" id="barNetVal">0 EUR</div>
+                </div>
+                <div class="bar-label">Netto-Gewinn<br>(Jahr 1)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Vorlese-Text -->
+        <div class="vorlese-panel">
+          <div class="card-header">
+            <div class="card-title">Vorlese-Text fuer Telefon</div>
+            <button class="copy-btn" id="copyBtn" onclick="copyVorlese()">Kopieren</button>
+          </div>
+          <div class="vorlese-text" id="vorleseText">
+            Waehlen Sie mindestens ein Modul aus, um den Vorlese-Text zu generieren.
+          </div>
+          <div class="vorlese-hint">Diesen Text kann der Verkaefer direkt am Telefon vorlesen.</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ========== 1. Modul-Definitionen ==========
+    const MODULES = [
+      {
+        id: 'm1',
+        name: 'Auftrags- & Frachtdokumenten-KI',
+        shortName: 'Auftrags-KI',
+        desc: 'Automatische Erfassung aller Auftrags-E-Mails',
+        badge: 'M1',
+        badgeClass: 'm1',
+        dotClass: 'dot-m1',
+        color: '#4299e1',
+        // Marktgerecht: OCR+KI+WinSped-Integration, Custom-Dev waere €80-200K Setup
+        // Bei 53K Sendungen: Setup €30.000, Monatlich €6.000
+        baseMonthly: 2000,
+        perShipment: 0.07547,
+        baseSetup: 12000,
+        setupPerShipment: 0.33962,
+        active: true
+      },
+      {
+        id: 'm2',
+        name: 'Kundenservice-Assistent (Julia Voice)',
+        shortName: 'Julia Voice',
+        desc: '24/7 KI-Telefonistin fuer Tracking & Service',
+        badge: 'M2',
+        badgeClass: 'm2',
+        dotClass: 'dot-m2',
+        color: '#48bb78',
+        // Marktgerecht: SIP+Voice+KI+Tracking-Anbindung, Parloa/Cognigy kosten 5-30x mehr
+        // Bei 53K Sendungen: Setup €12.000, Monatlich €3.500
+        baseMonthly: 990,
+        perShipment: 0.04736,
+        baseSetup: 12000,
+        setupPerShipment: 0,
+        active: true
+      },
+      {
+        id: 'm3',
+        name: 'Rechnungs- & Abrechnungs-KI',
+        shortName: 'Rechnungs-KI',
+        desc: 'Automatische Rechnungserstellung und -pruefung',
+        badge: 'M3',
+        badgeClass: 'm3',
+        dotClass: 'dot-m3',
+        color: '#ed8936',
+        // Marktgerecht: DATEV-Anbindung + Rechnungslogik, Coupa kostet €27K/Mo
+        // Bei 53K Sendungen: Setup €15.000, Monatlich €3.500
+        baseMonthly: 1200,
+        perShipment: 0.04340,
+        baseSetup: 8000,
+        setupPerShipment: 0.13208,
+        active: true
+      },
+      {
+        id: 'm4',
+        name: 'Interner Wissensassistent',
+        shortName: 'Wissens-KI',
+        desc: 'Intelligentes Nachschlagewerk fuer alle Mitarbeiter',
+        badge: 'M4',
+        badgeClass: 'm4',
+        dotClass: 'dot-m4',
+        color: '#ecc94b',
+        // Marktgerecht: Copilot kostet €30/User → €30K/Mo bei 1000 MA
+        // Bei 1000 MA: Setup €14.000, Monatlich €3.500
+        baseMonthly: 1500,
+        perEmployee: 2.0,
+        baseSetup: 6000,
+        setupPerEmployee: 8.0,
+        active: true
+      }
+    ];
+
+    const WORKDAYS_PER_MONTH = 22;
+    const MONTHS_PER_YEAR = 12;
+
+    // ========== 2. State ==========
+    let state = {
+      sendungen: 10000,
+      mitarbeiter: 100,
+      stundenlohn: 35,
+      standorte: 1,
+      companyName: '',
+      modules: { m1: true, m2: true, m3: true, m4: true }
+    };
+
+    // ========== 3. DOM References ==========
+    const $ = id => document.getElementById(id);
+
+    // ========== 4. Formatting ==========
+    function fmtEuro(val) {
+      if (val >= 1000000) return (val / 1000000).toFixed(1).replace('.', ',') + ' Mio. EUR';
+      if (val >= 10000) return Math.round(val).toLocaleString('de-DE') + ' EUR';
+      return val.toLocaleString('de-DE', { maximumFractionDigits: 0 }) + ' EUR';
+    }
+
+    function fmtNumber(val) {
+      return Math.round(val).toLocaleString('de-DE');
+    }
+
+    function fmtPercent(val) {
+      if (val > 9999) return '> 9.999%';
+      return Math.round(val).toLocaleString('de-DE') + '%';
+    }
+
+    // ========== 5. Calculation Logic ==========
+    function calcModulePrice(mod) {
+      const s = state.sendungen;
+      const m = state.mitarbeiter;
+
+      let monthly, setup;
+
+      if (mod.id === 'm4') {
+        // Wissensassistent: Mitarbeiter-basiert
+        monthly = mod.baseMonthly + mod.perEmployee * m;
+        setup = mod.baseSetup + mod.setupPerEmployee * m;
+      } else {
+        // Sendungs-basiert
+        monthly = mod.baseMonthly + (mod.perShipment || 0) * s;
+        setup = mod.baseSetup + (mod.setupPerShipment || 0) * s;
+      }
+
+      // Auf glatte 50er runden (fuer saubere Preise)
+      monthly = Math.round(monthly / 50) * 50;
+      setup = Math.round(setup / 500) * 500;
+
+      // Mindestpreise
+      if (mod.id === 'm2') monthly = Math.max(990, monthly);
+
+      return { monthly, setup };
+    }
+
+    function calcModuleSavings(mod) {
+      const s = state.sendungen;
+      const m = state.mitarbeiter;
+      const h = state.stundenlohn;
+      // Stundenlohn-Faktor: AMM-Referenz basiert auf ~€45/h Vollkosten
+      // Skaliere Einsparungen proportional zum eingestellten Stundenlohn
+      const hFactor = h / 35; // Normiert auf €35 Basis
+
+      let yearlySavings = 0;
+
+      switch (mod.id) {
+        case 'm1': {
+          // Auftrags-KI: ~€9,43 Einsparung pro Sendung/Jahr bei €35/h
+          // AMM: 53K × 9.43 = ~500K/Jahr
+          // Skaliert: linear mit Sendungen, proportional mit Stundenlohn
+          // Aber non-EDI-Anteil nimmt bei groesseren Speditionen nicht linear zu
+          const basePerShipment = 9.43;
+          // Leichte Degression bei sehr hohem Volumen (Effizienzgewinn nimmt ab)
+          const volumeFactor = s <= 20000 ? 1.0 : (s <= 60000 ? 1.0 : 0.92);
+          yearlySavings = s * basePerShipment * hFactor * volumeFactor;
+          break;
+        }
+        case 'm2': {
+          // Julia Voice: ~€3,40 pro Sendung/Jahr bei €35/h
+          // AMM: 53K × 3.40 = ~180K/Jahr
+          // Skaliert mit Anrufvolumen (korreliert mit Sendungen)
+          const basePerShipment = 3.40;
+          yearlySavings = s * basePerShipment * hFactor;
+          break;
+        }
+        case 'm3': {
+          // Rechnungs-KI: ~€2,55 pro Sendung/Jahr bei €35/h
+          // AMM: 53K × 2.55 = ~135K/Jahr
+          const basePerShipment = 2.55;
+          yearlySavings = s * basePerShipment * hFactor;
+          break;
+        }
+        case 'm4': {
+          // Wissensassistent: ~€100 pro MA/Jahr bei €35/h
+          // AMM: 1000 × 100 = ~100K/Jahr
+          // Skaliert hauptsaechlich mit Mitarbeiterzahl
+          const basePerEmployee = 100;
+          yearlySavings = m * basePerEmployee * hFactor;
+          break;
+        }
+      }
+
+      const monthlySavings = yearlySavings / MONTHS_PER_YEAR;
+      const monthlyHours = monthlySavings / h;
+
+      return { monthlyHours, monthlySavings, yearlySavings };
+    }
+
+    function calcAll() {
+      let totalSetup = 0, totalMonthly = 0, totalSavingsYear = 0;
+      let activeCount = 0;
+      const moduleResults = [];
+
+      MODULES.forEach(mod => {
+        const active = state.modules[mod.id];
+        const price = calcModulePrice(mod);
+        const savings = calcModuleSavings(mod);
+
+        moduleResults.push({
+          ...mod,
+          active,
+          price,
+          savings
+        });
+
+        if (active) {
+          totalSetup += price.setup;
+          totalMonthly += price.monthly;
+          totalSavingsYear += savings.yearlySavings;
+          activeCount++;
+        }
+      });
+
+      const totalCostYear1 = totalSetup + totalMonthly * 12;
+      const totalSavingsAdjusted = totalSavingsYear;
+      const netBenefitYear1 = totalSavingsAdjusted - totalCostYear1;
+      const roi = totalCostYear1 > 0 ? (netBenefitYear1 / totalCostYear1) * 100 : 0;
+      const roiFactor = totalCostYear1 > 0 ? totalSavingsAdjusted / totalCostYear1 : 0;
+
+      // Break-even in Monaten
+      const monthlyNetBenefit = (totalSavingsYear / 12) - totalMonthly;
+      const breakeven = monthlyNetBenefit > 0 ? totalSetup / monthlyNetBenefit : 999;
+
+      return {
+        moduleResults,
+        totalSetup,
+        totalMonthly,
+        totalSavingsYear,
+        totalCostYear1,
+        netBenefitYear1,
+        roi,
+        roiFactor,
+        breakeven: Math.ceil(breakeven * 10) / 10,
+        activeCount
+      };
+    }
+
+    // ========== 6. Count-up Animation ==========
+    const animationTargets = {};
+
+    function animateValue(el, targetVal, prefix, suffix, duration) {
+      const key = el.id;
+      if (animationTargets[key]) cancelAnimationFrame(animationTargets[key]);
+
+      const startVal = parseFloat(el.dataset.currentVal) || 0;
+      const startTime = performance.now();
+      const d = duration || 600;
+
+      function step(now) {
+        const progress = Math.min((now - startTime) / d, 1);
+        const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+        const current = startVal + (targetVal - startVal) * eased;
+        el.dataset.currentVal = current;
+
+        if (targetVal >= 1000000) {
+          el.textContent = (prefix || '') + (current / 1000000).toFixed(1).replace('.', ',') + ' Mio. EUR' + (suffix || '');
+        } else if (Math.abs(targetVal) >= 1000) {
+          el.textContent = (prefix || '') + Math.round(current).toLocaleString('de-DE') + (suffix || '');
+        } else if (suffix === '%') {
+          el.textContent = (prefix || '') + Math.round(current).toLocaleString('de-DE') + suffix;
+        } else {
+          el.textContent = (prefix || '') + current.toFixed(1).replace('.', ',') + (suffix || '');
+        }
+
+        if (progress < 1) {
+          animationTargets[key] = requestAnimationFrame(step);
+        }
+      }
+
+      animationTargets[key] = requestAnimationFrame(step);
+    }
+
+    // ========== 7. Render Functions ==========
+    function renderModuleList() {
+      const list = $('moduleList');
+      list.innerHTML = '';
+
+      MODULES.forEach(mod => {
+        const price = calcModulePrice(mod);
+        const active = state.modules[mod.id];
+
+        const item = document.createElement('div');
+        item.className = 'module-item' + (active ? ' active' : '');
+        item.onclick = () => {
+          state.modules[mod.id] = !state.modules[mod.id];
+          renderModuleList();
+          updateResults();
+        };
+
+        item.innerHTML = `
+          <div class="module-toggle"></div>
+          <div class="module-info">
+            <div class="module-name">
+              <span class="module-badge ${mod.badgeClass}">${mod.badge}</span>
+              ${mod.shortName}
+            </div>
+            <div class="module-desc">${mod.desc}</div>
+          </div>
+          <div class="module-price">
+            <div class="module-price-monthly">${fmtEuro(price.monthly)}</div>
+            <div class="module-price-setup">Setup: ${fmtEuro(price.setup)}</div>
+          </div>
+        `;
+
+        list.appendChild(item);
+      });
+    }
+
+    function renderBreakdown(results) {
+      const body = $('breakdownBody');
+      body.innerHTML = '';
+
+      results.moduleResults.forEach(mod => {
+        const tr = document.createElement('tr');
+        if (!mod.active) tr.className = 'inactive-row';
+
+        tr.innerHTML = `
+          <td><span class="module-dot ${mod.dotClass}"></span>${mod.shortName}</td>
+          <td>${fmtEuro(mod.price.setup)}</td>
+          <td>${fmtEuro(mod.price.monthly)}</td>
+          <td>${mod.active ? fmtEuro(mod.savings.yearlySavings) : '-'}</td>
+        `;
+        body.appendChild(tr);
+      });
+
+      // Totals
+      const totalTr = document.createElement('tr');
+      totalTr.className = 'total';
+      totalTr.innerHTML = `
+        <td>Gesamt</td>
+        <td>${fmtEuro(results.totalSetup)}</td>
+        <td>${fmtEuro(results.totalMonthly)}</td>
+        <td style="color:var(--green);font-weight:800">${fmtEuro(results.totalSavingsYear)}</td>
+      `;
+      body.appendChild(totalTr);
+    }
+
+    function renderBarChart(results) {
+      const maxVal = Math.max(results.totalCostYear1, results.totalSavingsYear, 1);
+      const maxHeight = 150; // px
+
+      const costH = (results.totalCostYear1 / maxVal) * maxHeight;
+      const savH = (results.totalSavingsYear / maxVal) * maxHeight;
+      const netH = results.netBenefitYear1 > 0 ? (results.netBenefitYear1 / maxVal) * maxHeight : 4;
+
+      $('barCosts').style.height = Math.max(costH, 4) + 'px';
+      $('barSavings').style.height = Math.max(savH, 4) + 'px';
+      $('barNet').style.height = Math.max(netH, 4) + 'px';
+
+      $('barCostsVal').textContent = fmtEuro(results.totalCostYear1);
+      $('barSavingsVal').textContent = fmtEuro(results.totalSavingsYear);
+      $('barNetVal').textContent = results.netBenefitYear1 > 0 ? fmtEuro(results.netBenefitYear1) : '0 EUR';
+
+      $('barNet').style.background = results.netBenefitYear1 > 0
+        ? 'linear-gradient(180deg, var(--gold), var(--gold-dark))'
+        : 'linear-gradient(180deg, var(--red), var(--red-dark))';
+    }
+
+    function generateVorlese(results) {
+      const name = state.companyName || 'Ihre Spedition';
+      const count = results.activeCount;
+
+      if (count === 0) return 'Waehlen Sie mindestens ein Modul aus, um den Vorlese-Text zu generieren.';
+
+      const activeModules = results.moduleResults.filter(m => m.active);
+      const moduleNames = activeModules.map(m => m.shortName);
+      let moduleStr = '';
+      if (moduleNames.length === 1) {
+        moduleStr = moduleNames[0];
+      } else {
+        moduleStr = moduleNames.slice(0, -1).join(', ') + ' und ' + moduleNames[moduleNames.length - 1];
+      }
+
+      const savingsMonthly = Math.round(results.totalSavingsYear / 12);
+      const beMonths = results.breakeven < 100 ? results.breakeven.toFixed(1).replace('.', ',') : 'unter 12';
+
+      let text = `<strong>${name}</strong> kann mit ${count === 4 ? 'allen vier' : count} KI-Modulen `;
+      text += `(<strong>${moduleStr}</strong>) `;
+      text += `rund <strong>${fmtEuro(results.totalSavingsYear)}</strong> pro Jahr einsparen. `;
+      text += `Das sind <strong>${fmtEuro(savingsMonthly)} jeden Monat</strong>. `;
+      text += `Die Investition: einmalig <strong>${fmtEuro(results.totalSetup)}</strong> Setup `;
+      text += `und <strong>${fmtEuro(results.totalMonthly)} pro Monat</strong>. `;
+
+      if (results.breakeven < 12) {
+        text += `Das amortisiert sich in nur <strong>${beMonths} Monaten</strong>. `;
+      }
+
+      if (results.roiFactor > 3) {
+        text += `Fuer jeden investierten Euro bekommen Sie <strong>${results.roiFactor.toFixed(1).replace('.', ',')} Euro</strong> zurueck. `;
+      }
+
+      text += `Wollen wir mit einem kostenlosen Proof-of-Concept starten?`;
+
+      return text;
+    }
+
+    // ========== 8. Update Results ==========
+    function updateResults() {
+      const r = calcAll();
+
+      // Hero
+      animateValue($('heroSavings'), r.totalSavingsYear, '', ' EUR', 800);
+      animateValue($('heroROI'), Math.min(r.roi, 9999), '', '%', 800);
+
+      if (r.breakeven < 100) {
+        animateValue($('heroBreakeven'), r.breakeven, '', ' Monate', 600);
+      } else {
+        $('heroBreakeven').textContent = '- Monate';
+        $('heroBreakeven').dataset.currentVal = 0;
+      }
+
+      // KPI Cards
+      $('kpiSavings').textContent = fmtEuro(r.totalSavingsYear);
+      $('kpiSavingsMonth').textContent = fmtEuro(Math.round(r.totalSavingsYear / 12)) + ' / Monat';
+
+      $('kpiROI').textContent = fmtPercent(r.roi);
+      $('kpiROIFactor').textContent = r.roiFactor.toFixed(1).replace('.', ',') + 'x Faktor';
+
+      $('kpiBreakeven').textContent = r.breakeven < 100 ? r.breakeven.toFixed(1).replace('.', ',') + ' Monate' : 'n/a';
+
+      // Break-even Datum
+      if (r.breakeven < 100) {
+        const beDate = new Date();
+        beDate.setMonth(beDate.getMonth() + Math.ceil(r.breakeven));
+        $('kpiBEDate').textContent = beDate.toLocaleDateString('de-DE', { month: 'long', year: 'numeric' });
+      } else {
+        $('kpiBEDate').textContent = '-';
+      }
+
+      // Cost Cards
+      $('costSetup').textContent = fmtEuro(r.totalSetup);
+      $('costSetupDetail').textContent = `Fuer ${r.activeCount} Modul${r.activeCount !== 1 ? 'e' : ''}`;
+      $('costMonthly').textContent = fmtEuro(r.totalMonthly);
+      $('costMonthlyDetail').textContent = fmtEuro(r.totalMonthly * 12) + ' / Jahr';
+
+      // Breakdown
+      renderBreakdown(r);
+
+      // Bar Chart
+      renderBarChart(r);
+
+      // Vorlese
+      $('vorleseText').innerHTML = generateVorlese(r);
+    }
+
+    // ========== 9. Event Handlers ==========
+    function onInputChange() {
+      state.sendungen = parseInt($('sendungenSlider').value);
+      state.mitarbeiter = parseInt($('mitarbeiterSlider').value);
+      state.stundenlohn = parseInt($('stundenlohnSlider').value);
+      state.standorte = parseInt($('standorteSlider').value);
+
+      $('sendungenDisplay').textContent = fmtNumber(state.sendungen);
+      $('mitarbeiterDisplay').textContent = fmtNumber(state.mitarbeiter);
+      $('stundenlohnDisplay').textContent = state.stundenlohn + ' EUR';
+      $('standorteDisplay').textContent = state.standorte;
+
+      renderModuleList();
+      updateResults();
+    }
+
+    function updateCompanyName() {
+      state.companyName = $('companyName').value;
+      $('companyDisplay').textContent = state.companyName || 'Ihre Spedition';
+      updateResults();
+    }
+
+    function toggleAllModules() {
+      const allActive = MODULES.every(m => state.modules[m.id]);
+      MODULES.forEach(m => state.modules[m.id] = !allActive);
+      renderModuleList();
+      updateResults();
+    }
+
+    function togglePresentation() {
+      document.body.classList.toggle('presentation');
+      const isP = document.body.classList.contains('presentation');
+      $('presBtn').textContent = isP ? 'Bearbeiten' : 'Praesentation';
+    }
+
+    function resetAll() {
+      $('sendungenSlider').value = 10000;
+      $('mitarbeiterSlider').value = 100;
+      $('stundenlohnSlider').value = 35;
+      $('standorteSlider').value = 1;
+      $('companyName').value = '';
+
+      state = {
+        sendungen: 10000,
+        mitarbeiter: 100,
+        stundenlohn: 35,
+        standorte: 1,
+        companyName: '',
+        modules: { m1: true, m2: true, m3: true, m4: true }
+      };
+
+      onInputChange();
+      updateCompanyName();
+    }
+
+    function copyVorlese() {
+      const text = $('vorleseText').innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = $('copyBtn');
+        btn.textContent = 'Kopiert!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Kopieren';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+
+    // ========== 10. AMM Preset ==========
+    function loadAMMPreset() {
+      $('sendungenSlider').value = 53000;
+      $('mitarbeiterSlider').value = 1000;
+      $('stundenlohnSlider').value = 35;
+      $('standorteSlider').value = 3;
+      $('companyName').value = 'AMM Spedition GmbH';
+
+      state.sendungen = 53000;
+      state.mitarbeiter = 1000;
+      state.stundenlohn = 35;
+      state.standorte = 3;
+      state.companyName = 'AMM Spedition GmbH';
+      state.modules = { m1: true, m2: true, m3: true, m4: true };
+
+      onInputChange();
+      updateCompanyName();
+    }
+
+    // ========== 11. Init ==========
+    function init() {
+      onInputChange();
+      updateCompanyName();
+
+      // Slider track fill (visual enhancement)
+      document.querySelectorAll('input[type="range"]').forEach(slider => {
+        function updateTrack() {
+          const min = parseFloat(slider.min);
+          const max = parseFloat(slider.max);
+          const val = parseFloat(slider.value);
+          const pct = ((val - min) / (max - min)) * 100;
+          slider.style.background = `linear-gradient(to right, var(--blue) 0%, var(--blue) ${pct}%, var(--border) ${pct}%, var(--border) 100%)`;
+        }
+        slider.addEventListener('input', updateTrack);
+        updateTrack();
+      });
+    }
+
+    init();
+
+    // ========== 12. Service Worker Registration ==========
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    }
+  </script>
+
+</body>
+</html>
