@@ -1113,6 +1113,138 @@
       text-align: center;
       font-weight: 600;
     }
+
+    /* ========== 15. Jahr 1 vs 2 Highlight ========== */
+    .year-compare {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 0;
+      align-items: stretch;
+    }
+
+    @media (max-width: 600px) {
+      .year-compare {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      .year-compare-arrow { display: none; }
+    }
+
+    .year-compare-card {
+      padding: 24px 20px;
+      border-radius: var(--radius);
+      text-align: center;
+      position: relative;
+    }
+
+    .year-compare-card.year1 {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+    }
+
+    .year-compare-card.year2 {
+      background: linear-gradient(135deg, rgba(72,187,120,0.08), rgba(236,201,75,0.08));
+      border: 2px solid var(--green);
+      box-shadow: 0 0 30px rgba(72,187,120,0.1);
+    }
+
+    .year-compare-card.year2::before {
+      content: 'EMPFEHLUNG';
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--green);
+      color: white;
+      font-size: 0.6rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      padding: 3px 12px;
+      border-radius: 10px;
+    }
+
+    .year-compare-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .year-compare-savings {
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 800;
+      color: var(--green);
+      font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+      margin-bottom: 4px;
+    }
+
+    .year-compare-costs {
+      font-size: 0.82rem;
+      color: var(--text-dim);
+      margin-bottom: 10px;
+    }
+
+    .year-compare-net {
+      font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+      font-weight: 800;
+      font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+      padding-top: 10px;
+      border-top: 1px solid rgba(51,65,85,0.5);
+    }
+
+    .year-compare-net.positive { color: var(--gold); }
+    .year-compare-net.negative { color: var(--red); }
+
+    .year-compare-detail {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      margin-top: 4px;
+    }
+
+    .year-compare-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 16px;
+      color: var(--green);
+      font-size: 2rem;
+    }
+
+    .year-compare-arrow svg {
+      width: 40px;
+      height: 40px;
+      fill: none;
+      stroke: var(--green);
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* Vorlese als Collapsible */
+    .vorlese-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .vorlese-toggle .chevron {
+      transition: transform 0.3s ease;
+      color: var(--text-dim);
+    }
+
+    .vorlese-panel.collapsed .vorlese-text,
+    .vorlese-panel.collapsed .vorlese-hint,
+    .vorlese-panel.collapsed .copy-btn {
+      display: none;
+    }
+
+    .vorlese-panel.collapsed .chevron {
+      transform: rotate(-90deg);
+    }
   </style>
 </head>
 <body>
@@ -1253,10 +1385,37 @@
             <div class="kpi-value blue" id="kpiBreakeven">- Monate</div>
             <div class="kpi-sub" id="kpiBEDate">-</div>
           </div>
-          <div class="kpi-card roi" style="--top-color:var(--green)">
+          <div class="kpi-card savings">
             <div class="kpi-label">Netto-Gewinn (Jahr 2)</div>
             <div class="kpi-value green" id="kpiYear2Net">0 EUR</div>
             <div class="kpi-sub" id="kpiYear2Sub">ohne Setup-Kosten</div>
+          </div>
+        </div>
+
+        <!-- Jahr 1 vs Jahr 2 Vergleich - prominent -->
+        <div class="card" id="yearCompareSection">
+          <div class="card-header">
+            <div class="card-title">Ihr Gewinn: Jahr 1 vs. Jahr 2</div>
+            <span class="savings-arrow" id="yearCompareBadge">Setup entfaellt ab J2</span>
+          </div>
+          <div class="year-compare" id="yearCompare">
+            <div class="year-compare-card year1">
+              <div class="year-compare-label">Jahr 1 (inkl. Setup)</div>
+              <div class="year-compare-savings" id="yc1Savings">0 EUR</div>
+              <div class="year-compare-costs" id="yc1Costs">Kosten: 0 EUR</div>
+              <div class="year-compare-net positive" id="yc1Net">+0 EUR</div>
+              <div class="year-compare-detail" id="yc1Detail">Netto-Gewinn</div>
+            </div>
+            <div class="year-compare-arrow">
+              <svg viewBox="0 0 40 40"><path d="M12 20h16M22 14l6 6-6 6"/></svg>
+            </div>
+            <div class="year-compare-card year2">
+              <div class="year-compare-label">Ab Jahr 2 (ohne Setup)</div>
+              <div class="year-compare-savings" id="yc2Savings">0 EUR</div>
+              <div class="year-compare-costs" id="yc2Costs">Nur 0 EUR/Monat</div>
+              <div class="year-compare-net positive" id="yc2Net">+0 EUR</div>
+              <div class="year-compare-detail" id="yc2Detail">Netto-Gewinn pro Jahr</div>
+            </div>
           </div>
         </div>
 
@@ -1383,11 +1542,17 @@
           </div>
         </div>
 
-        <!-- Vorlese-Text -->
-        <div class="vorlese-panel">
-          <div class="card-header">
-            <div class="card-title">Vorlese-Text fuer Telefon</div>
-            <button class="copy-btn" id="copyBtn" onclick="copyVorlese()">Kopieren</button>
+        <!-- Vorlese-Text (eingeklappt) -->
+        <div class="vorlese-panel collapsed" id="vorlesePanel">
+          <div class="card-header vorlese-toggle" onclick="toggleVorlese()">
+            <div class="card-title" style="display:flex;align-items:center;gap:8px">
+              <span>Vorlese-Text fuer Telefon</span>
+              <span style="font-size:0.65rem;color:var(--text-dim);text-transform:none;letter-spacing:0;font-weight:400">(fuer Vertrieb)</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <button class="copy-btn" id="copyBtn" onclick="event.stopPropagation();copyVorlese()">Kopieren</button>
+              <span class="chevron">&#9660;</span>
+            </div>
           </div>
           <div class="vorlese-text" id="vorleseText">
             Waehlen Sie mindestens ein Modul aus, um den Vorlese-Text zu generieren.
@@ -1488,7 +1653,7 @@
       stundenlohn: 35,
       standorte: 1,
       companyName: '',
-      modules: { m1: true, m2: true, m3: true, m4: true }
+      modules: { m1: true, m2: false, m3: false, m4: false }
     };
 
     // ========== 3. DOM References ==========
@@ -1950,6 +2115,32 @@
       $('freeTimeDetail').textContent = `durch Lohnsteigerung +${valueDiff.toFixed(0)}% wertvoller als heute`;
     }
 
+    function renderYearCompare(multiYear, baseResults) {
+      if (multiYear.years.length < 2) return;
+      const y1 = multiYear.years[0];
+      const y2 = multiYear.years[1];
+
+      // Jahr 1
+      $('yc1Savings').textContent = fmtEuro(y1.savings);
+      $('yc1Costs').textContent = `Kosten: ${fmtEuro(y1.totalCost)} (inkl. ${fmtEuro(y1.setup)} Setup)`;
+      $('yc1Net').textContent = (y1.netBenefit >= 0 ? '+' : '') + fmtEuro(y1.netBenefit);
+      $('yc1Net').className = 'year-compare-net ' + (y1.netBenefit >= 0 ? 'positive' : 'negative');
+      $('yc1Detail').textContent = `ROI: ${(y1.roi).toFixed(0)}%`;
+
+      // Jahr 2
+      $('yc2Savings').textContent = fmtEuro(y2.savings);
+      $('yc2Costs').textContent = `Nur ${fmtEuro(baseResults.totalMonthly)}/Monat`;
+      $('yc2Net').textContent = '+' + fmtEuro(y2.netBenefit);
+      $('yc2Net').className = 'year-compare-net positive';
+
+      const improvementPct = y1.netBenefit > 0
+        ? Math.round(((y2.netBenefit - y1.netBenefit) / y1.netBenefit) * 100)
+        : 0;
+      $('yc2Detail').textContent = improvementPct > 0
+        ? `+${improvementPct}% mehr Gewinn als Jahr 1`
+        : `Netto-Gewinn pro Jahr`;
+    }
+
     // ========== 8. Update Results ==========
     function updateResults() {
       const r = calcAll();
@@ -2005,6 +2196,7 @@
         $('kpiYear2Sub').textContent = `ohne Setup, +${((y2.wageFactor - 1) * 100).toFixed(1)}% Lohn`;
       }
 
+      renderYearCompare(multiYear, r);
       renderMultiYearGrid(multiYear);
       renderMultiYearChart(multiYear);
       renderMultiYearSummary(multiYear, r);
@@ -2062,11 +2254,15 @@
         stundenlohn: 35,
         standorte: 1,
         companyName: '',
-        modules: { m1: true, m2: true, m3: true, m4: true }
+        modules: { m1: true, m2: false, m3: false, m4: false }
       };
 
       onInputChange();
       updateCompanyName();
+    }
+
+    function toggleVorlese() {
+      $('vorlesePanel').classList.toggle('collapsed');
     }
 
     function copyVorlese() {
